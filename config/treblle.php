@@ -23,7 +23,7 @@ return [
         'password',
         'pwd',
         'secret',
-        'password_confirmation',
+        'confirm_password',
         'cc',
         'card_number',
         'ccv',
