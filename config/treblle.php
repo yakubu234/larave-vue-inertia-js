@@ -21,14 +21,6 @@ return [
      */
     'masked_fields' => [
         'password',
-        'pwd',
-        'secret',
         'confirm_password',
-        'cc',
-        'card_number',
-        'ccv',
-        'ssn',
-        'credit_score',
-        'api_key',
     ],
 ];
