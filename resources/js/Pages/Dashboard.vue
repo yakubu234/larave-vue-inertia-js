@@ -20,7 +20,7 @@
             <div class="w-4/5 px-profilePadX py-profilePadY">
                 <h2 class="text-standardPurple font-bold text-xl mb-6">Profile</h2>
                 <div class="font-bold flex items-center justify-between text-white block py-3 px-6 bg-standardPurple">
-                    welcome, ABIOLA
+                    welcome, {{ data.original.data.user_details.name }}
                     <button class="bg-white font-bold text-standardPurple py-1 px-3 rounded-sm">
                         Logout
                     </button>
@@ -33,25 +33,29 @@
                     <label class="font-medium mt-6 mb-2 text-sm block">Full Name</label>
 
                     <input type="text"
-                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
+                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full"
+                        value=" {{ data.original.data.user_details.name }}" />
                     <br />
                     <label class="font-medium mt-6 mb-2 text-sm block">Email</label>
 
-                    <input type="email"
-                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 w-full" />
+                    <input type="email" class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 w-full"
+                        value=" {{ data.original.data.user_details.email }}" />
                     <br />
                     <label class="font-medium mt-6 mb-2 text-sm block">Password</label>
 
                     <input type="password"
-                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 w-full" />
+                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 w-full"
+                        placeholder="**********" />
                     <br />
                     <label class="font-medium mt-6 mb-2 text-sm block">Confirm Password</label>
 
                     <input type="password"
-                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 w-full" />
+                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 w-full"
+                        placeholder="**********" />
                     <br />
                     <button type="submit"
-                        class="mt-8 mb-8 bg-standardPurple text-white py-4 px-3 uppercase text-sm font-bold rounded-md">
+                        class="mt-8 mb-8 bg-standardPurple text-white py-4 px-3 uppercase text-sm font-bold rounded-md"
+                        :disabled="form.processing">
                         update details
                     </button>
 
@@ -64,3 +68,25 @@
         </div>
     </div>
 </template>
+
+<script>
+import { computed } from 'vue'
+import { Head, useForm, Link, usePage } from '@inertiajs/vue3';
+
+export default {
+    components: {
+        Head, useForm, Link, usePage
+    },
+    setup() {
+        const form = useForm({
+            email: "",
+            password: ""
+        })
+
+        const data = computed(() => usePage().props.flash.data)
+
+        return { form, data }
+    }
+}
+
+</script>

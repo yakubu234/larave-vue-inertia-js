@@ -6,40 +6,33 @@ use App\Actions\LoginAction;
 use App\Actions\RegisterAction;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Traits\ApiResponseTrait;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 
 class AuthenticationController extends Controller
 {
+    use ApiResponseTrait;
+
     public function register(RegisterRequest $request)
     {
         $data = (new RegisterAction())->register($request->validated());
+        $view = $data->getData()->status == 'Success' ? 'show.dashboard' : 'show.register.page';
 
-        if (request()->wantsJson()) {
-            return $data; //this is api
-        }
-
-        return Inertia('Register', [
-            'data' => $data
-        ]);
+        return $request->wantsJson() ? $data : redirect()->route($view)->with('data', $data);
     }
 
     public function login(LoginRequest $request)
     {
         $data = (new LoginAction())->login($request->validated());
-        if (request()->wantsJson()) {
-            return $data; //this is api
-        }
+        $view = $data->getData()->status == 'Success' ? 'show.dashboard' : 'show.login.page';
 
-        return Inertia('Dashboard', [
-            'page' => 'pages'
-        ]);
+        return $request->wantsJson() ? $data : redirect()->route($view)->with('data', $data);
     }
 
     public function showDashboard()
     {
-        return Inertia('Dashboard', [
-            'page' => 'pages'
-        ]);
+        return Inertia::render('Dashboard');
     }
 
     public function showLoginPage()
@@ -52,8 +45,11 @@ class AuthenticationController extends Controller
         return Inertia('Register');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
+        $request->user()->currentAccessToken()->delete();
+        $data = $this->success(null, 'logout successful');
+        return $request->wantsJson() ? $data : Inertia::render('Login', ['data' => $data]);
     }
 
     public function deleteAccount()

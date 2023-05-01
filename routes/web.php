@@ -18,6 +18,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('showLoginPage', [AuthenticationController::class, 'showLoginPage'])->name('login');
-Route::get('showRegisterPage', [AuthenticationController::class, 'showRegisterPage'])->name('register');
-Route::get('showDashboard', [AuthenticationController::class, 'showDashboard'])->name('dashboard');
+Route::get('show-login-page', [AuthenticationController::class, 'showLoginPage'])->name('show.login.page');
+Route::post('login', [AuthenticationController::class, 'login'])->name('login');
+Route::post('register', [AuthenticationController::class, 'register'])->name('register');
+Route::get('show-register-page', [AuthenticationController::class, 'showRegisterPage'])->name('show.register.page');
+Route::get('show-dashboard', [AuthenticationController::class, 'showDashboard'])->name('show.dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/update', [AuthenticationController::class, 'updateDetails'])->name('update');
+    Route::post('/delete', [AuthenticationController::class, 'deleteAccount'])->name('delete');
+    Route::get('/dashboard', [AuthenticationController::class, 'showDashboard'])->name('show.dashboard');
+});

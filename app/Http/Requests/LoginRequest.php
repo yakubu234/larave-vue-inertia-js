@@ -25,7 +25,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'exist:users,email'],
+            'email' => ['required', 'email', 'exists:users,email'],
             'password' => ['required', 'string', 'min:6'],
         ];
     }
@@ -34,18 +34,9 @@ class LoginRequest extends FormRequest
     {
         return [
             'email.required' => 'Email is required!',
-            'email.exist' => 'Email already exist!',
+            'email.exists' => 'Email already exist!',
             'password.required' => 'Password is required!',
             'password.min' => 'Password can only be minimum of 6 characters',
         ];
-    }
-
-    protected function passedValidation()
-    {
-        if ($this->request->has('password')) {
-            $this->merge([
-                'password' => $this->encryption($this->password)
-            ]);
-        }
     }
 }
