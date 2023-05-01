@@ -14,9 +14,11 @@ class AuthenticationController extends Controller
     {
         $data = (new RegisterAction())->register($request->validated());
 
+        //this is api
         if (request()->wantsJson()) {
-            return $data; //this is api
+            return $data;
         }
+
 
         return Inertia('Register', [
             'data' => $data
@@ -26,13 +28,10 @@ class AuthenticationController extends Controller
     public function login(LoginRequest $request)
     {
         $data = (new LoginAction())->login($request->validated());
-        if (request()->wantsJson()) {
-            return $data; //this is api
-        }
+        $view = $data->getData()->status == 'Success' ? 'Dashboard' : 'Login';
 
-        return Inertia('Dashboard', [
-            'page' => 'pages'
-        ]);
+
+        return $request->wantsJson() ? $data : Inertia($view, ['data' => $data]);
     }
 
     public function showDashboard()

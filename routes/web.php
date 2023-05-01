@@ -18,6 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('showLoginPage', [AuthenticationController::class, 'showLoginPage'])->name('login');
-Route::get('showRegisterPage', [AuthenticationController::class, 'showRegisterPage'])->name('register');
-Route::get('showDashboard', [AuthenticationController::class, 'showDashboard'])->name('dashboard');
+Route::get('show-login-page', [AuthenticationController::class, 'showLoginPage'])->name('show.login.page');
+Route::post('login', [AuthenticationController::class, 'login']);
+Route::get('show-register-page', [AuthenticationController::class, 'showRegisterPage'])->name('show.register.page');
+Route::get('show-dashboard', [AuthenticationController::class, 'showDashboard'])->name('show.dashboard');

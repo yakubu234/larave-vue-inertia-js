@@ -52,13 +52,4 @@ class RegisterRequest extends FormRequest
             'confirm_password.required' => 'Confirm Password is required and can only be minimum of 6 characters',
         ];
     }
-
-    protected function passedValidation()
-    {
-        if ($this->request->has('password')) {
-            $this->merge([
-                'password' => $this->encryption($this->password)
-            ]);
-        }
-    }
 }

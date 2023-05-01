@@ -1,6 +1,6 @@
 <template>
     <div class="sm:px-8 sm:py-8 w-full h-full text-standardPurple h-screen">
-        <div class="sm:flex bg-[url('./img/authentication.svg')] bg-no-repeat bg-cover px-8 py-8 sm:bg-none">
+        <div class="sm:flex bg-authentication-image bg-no-repeat bg-cover px-8 py-8 sm:bg-none">
             <div class="content w-3/5 sm:flex items-center justify-center">
                 <div class="sm:flex sm:flex-col">
                     <div
@@ -8,7 +8,7 @@
                         <p class="text-white">logo</p>
                     </div>
 
-                    <h2 class="font-bold text-center mt-8">Create Account</h2>
+                    <h2 class="font-bold text-center mt-4">Create Account</h2>
                     <p class="italic text-center">
                         Enter the fields below to get started
                     </p>
@@ -38,6 +38,9 @@
                             sign up
                         </button>
                     </form>
+                    <p>Already have an account?
+                        <Link :href="route('show.login.page')">Login</Link> Here
+                    </p>
                 </div>
             </div>
             <div class="flex items-stretch logo hidden sm:flex">
@@ -46,3 +49,21 @@
         </div>
     </div>
 </template>
+
+<script>
+import { Head, useForm, Link } from '@inertiajs/vue3';
+
+export default {
+    components: {
+        Head, useForm, Link
+    },
+    setup() {
+        const form = useForm({
+            email: "",
+            password: ""
+        })
+
+        return { form }
+    }
+}
+</script>
