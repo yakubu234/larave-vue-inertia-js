@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use App\Traits\ApiResponseTrait;
 use App\Traits\LogTrait;
 
@@ -21,6 +22,8 @@ class RegisterAction
 
         try {
             $this->user = User::create($data);
+
+            Auth::login($this->user);
 
             return $this->success([
                 'token' => $this->user->createToken('API Token')->plainTextToken,
