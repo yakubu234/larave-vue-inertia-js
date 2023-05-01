@@ -36,9 +36,11 @@ module.exports = {
         space: ".7rem",
       },
       colors: {
+        softWhite: "rgba(255,255,255,.8)",
         clifford: "#da373d",
         standardPurple: "#190B6F",
         BgstandardPurple: "#190B6F",
+        links: "rgb(37, 150, 190)"
       },
     },
   }, variants: {

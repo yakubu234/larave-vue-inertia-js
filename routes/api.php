@@ -22,6 +22,8 @@ Route::post('login', [AuthenticationController::class, 'login']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/update', [AuthenticationController::class, 'updateDetails']);
+    Route::delete('/delete', [AuthenticationController::class, 'deleteAccount']);
     Route::post('logout', [AuthenticationController::class, 'logout']);
 });
 // });

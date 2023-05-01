@@ -25,7 +25,7 @@ Route::get('show-register-page', [AuthenticationController::class, 'showRegister
 Route::get('show-dashboard', [AuthenticationController::class, 'showDashboard'])->name('show.dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::post('/update', [AuthenticationController::class, 'updateDetails'])->name('update');
-    Route::post('/delete', [AuthenticationController::class, 'deleteAccount'])->name('delete');
+    Route::put('/update', [AuthenticationController::class, 'updateDetails'])->name('update');
+    Route::delete('/delete', [AuthenticationController::class, 'deleteAccount'])->name('delete');
     Route::get('/dashboard', [AuthenticationController::class, 'showDashboard'])->name('show.dashboard');
 });
