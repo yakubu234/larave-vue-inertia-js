@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\ApiResponseTrait;
 use App\Traits\EncryptionTrait;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
-class UpdateRequest extends FormRequest
+class PasswordUpdateRequest extends FormRequest
 {
     use ApiResponseTrait, EncryptionTrait;
     /**
@@ -27,18 +27,31 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'password' => ['required']
+            'password' => ['required', Password::min(6)
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()],
+            'confirm_password' => ['required', 'same:password']
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'Name is required!',
-            'name.string' => 'Name can only be string',
             'password.required' => 'Password is required!',
             'password.min' => 'Password can only be minimum of 6 characters',
+            'confirm_password.same' => 'Confrim Password must be the same as password',
+            'confirm_password.required' => 'Confirm Password is required and can only be minimum of 6 characters',
         ];
+    }
+
+    protected function passedValidation()
+    {
+        if ($this->request->has('password')) {
+            $this->merge([
+                'password' => bcrypt($this->password)
+            ]);
+        }
     }
 }

@@ -7,8 +7,10 @@ use App\Actions\RegisterAction;
 use App\Actions\UpdateUserAction;
 use App\Http\Requests\DeleteRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Inertia\Inertia;
@@ -21,7 +23,9 @@ class AuthenticationController extends Controller
 
     public function showDashboard()
     {
-        return Inertia::render('Dashboard');
+        $user =  Auth::user();
+        $data = $this->success(['user_details' => new UserResource($user)], 'Login Successful', 201);
+        return Inertia::render('Dashboard', ['data' => $data]);
     }
 
     public function showLoginPage()
@@ -53,8 +57,11 @@ class AuthenticationController extends Controller
     public function updateDetails(UpdateRequest $request)
     {
         $data = (new UpdateUserAction())->update($request->validated());
-
         return $request->wantsJson() ? $data : redirect()->route('/show.dashboard')->with('data', $data);
+    }
+
+    public function updatePassword(PasswordUpdateRequest $request)
+    {
     }
 
     public function deleteAccount(Request $request)
@@ -71,7 +78,15 @@ class AuthenticationController extends Controller
         return $request->wantsJson() ? $data : Inertia::render('Login', ['data' => $data]);
     }
 
-    public function newToken()
+    public function refreshToken(Request $request)
     {
+        $user = $request->user();
+        $user->tokens()->delete();
+        $data = $this->success([
+            'token' =>  $user->createToken('API Token')->plainTextToken,
+            'user_details' => new UserResource($user)
+        ], 'token refresh successful');
+
+        return $request->wantsJson() ? $data : redirect()->route('/show.dashboard')->with('data', $data);
     }
 }

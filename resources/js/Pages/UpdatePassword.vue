@@ -69,51 +69,31 @@
                         Logout
                     </button>
                 </div>
-
-                <span v-if="message" class="text-red-600">
-                    {{ message }}
-                </span>
-
                 <p class="italic text-standardPurple mt-4 mb-6 hidden md:block">
-                    Enter the fields below to get started
+                    Enter the fields below to change your password
                 </p>
 
                 <form class="" @submit.prevent="form.put(route('update'))">
-                    <label class="font-medium mt-6 mb-2 text-sm block">Full Name</label>
 
-                    <input type="text" name="name" v-model="form.name"
-                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
-                    <span v-if="$page.props.errors.name" class="text-red-600">
-                        {{ $page.props.errors.name }}
-                    </span>
-                    <br />
-                    <label class="font-medium mt-6 mb-2 text-sm block">Email</label>
-
-                    <input type="email" readonly v-model="form.email"
-                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
-                    <span v-if="$page.props.errors.email" class="text-red-600">
-                        {{ $page.props.errors.email }}
-                    </span>
-                    <br />
                     <label class="font-medium mt-6 mb-2 text-sm block">Password</label>
 
-                    <input type="password" placeholder="**********" v-model="form.password"
+                    <input type="password" placeholder="**********"
                         class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
-                    <span v-if="$page.props.errors.password" class="text-red-600">
-                        {{ $page.props.errors.password }}
-                    </span>
+                    <br />
+                    <label class="font-medium mt-6 mb-2 text-sm block">Confirm Password</label>
+
+                    <input type="password" placeholder="**********"
+                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
                     <br />
                     <button type="submit"
                         class="mt-8 mb-8 bg-standardPurple text-white py-4 px-3 uppercase text-sm font-bold rounded-md w-full md:w-2/5">
-                        update details
+                        update password
                     </button>
 
                 </form>
-
-                <button type="button" @click="destroy(data.original.data.user_details.id)"
-                    class="block mb-8 bg-white text-red-300 border-red-300 border-2 py-4 px-3 uppercase text-sm font-bold rounded-md w-full md:w-2/5">
-                    delete my account
-                </button>
+                <p class="text-center">back to
+                    <Link :href="route('show.dashboard')" class="underline text-links ">Dashboard</Link>
+                </p>
             </div>
         </div>
     </div>
@@ -134,9 +114,8 @@ export default {
         const message = props.data.original.message;
 
         const form = useForm({
-            name: props.data.original.data.user_details.name || "",
-            email: props.data.original.data.user_details.email || "",
-            password: "",
+            password: null,
+            confirm_password: null
 
         })
 

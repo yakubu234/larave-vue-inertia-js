@@ -27,5 +27,6 @@ Route::get('show-dashboard', [AuthenticationController::class, 'showDashboard'])
 Route::middleware('auth')->group(function () {
     Route::put('/update', [AuthenticationController::class, 'updateDetails'])->name('update');
     Route::delete('/delete', [AuthenticationController::class, 'deleteAccount'])->name('delete');
+    Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AuthenticationController::class, 'showDashboard'])->name('show.dashboard');
 });

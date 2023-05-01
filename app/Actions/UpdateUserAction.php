@@ -8,6 +8,7 @@ use App\Traits\ApiResponseTrait;
 use App\Traits\EncryptionTrait;
 use App\Traits\LogTrait;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UpdateUserAction
 {
@@ -15,20 +16,21 @@ class UpdateUserAction
 
     public function update($data)
     {
-        unset($data['confirm_password']);
 
         $userID = Auth::user()->id;
-        try {
-            $user  = User::find($userID);
-            $user->update($data);
 
-            if ($user) {
-                return $this->success([
-                    'user_details' => new UserResource($user)
-                ], 'record updated successfully', 200);
+        try {
+            $user = User::find($userID);
+
+            if (!Hash::check($data['password'], $user->password)) {
+                return $this->error('Invalid Password', 401, null);
             }
 
-            return $this->error('Invalid Password', 400, null);
+            unset($data['password']);
+            $user->update($data);
+            return $this->success([
+                'user_details' => new UserResource($user)
+            ], 'record updated successfully', 200);
         } catch (\Throwable $th) {
             $this->log(sprintf('[%s],[%d] ERROR:[%s]', __METHOD__, __LINE__, json_encode($th->getMessage(), true)));
             return $this->error('An error occured when updating', 400, null);

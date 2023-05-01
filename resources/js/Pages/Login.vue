@@ -62,7 +62,7 @@ export default {
             email: "",
             password: ""
         })
-        const data = computed(() => usePage().props.flash.data)
+        const data = computed(() => usePage().props.data)
 
         return { form, data }
     }

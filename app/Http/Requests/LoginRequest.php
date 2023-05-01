@@ -34,7 +34,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email.required' => 'Email is required!',
-            'email.exists' => 'Email already exist!',
+            'email.exists' => 'Email does not exist!',
             'password.required' => 'Password is required!',
             'password.min' => 'Password can only be minimum of 6 characters',
         ];
