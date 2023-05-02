@@ -59,13 +59,14 @@ run the below command on a terminal at the parent dircetory
 ```php artisan migrate```
 
 to migrate the database schemas
-<!-- ## Run Test
+
+## Run Test
 
 use the following command to run the test
 
 ```bash
-npm test -->
-<!-- ``` -->
+php artisan test
+ ```
 
 ## Serve the project
 
