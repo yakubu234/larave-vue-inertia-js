@@ -56,45 +56,25 @@
                     Welcome
                 </p>
                 <h2 class="text-standardPurple font-bold text-xl mb-6 text-center md:hidden">
-                    {{ form.name }}
+                    {{ data.name }}
                 </h2>
                 <p class="italic text-standardPurple mt-6 text-center md:hidden">
-                    Edit your details here
+                    Enter the fields below to change your password
                 </p>
                 <div
                     class="font-bold flex items-center justify-between text-white block py-3 px-6 bg-standardPurple hidden md:flex">
-                    welcome, {{ form.name }}
+                    welcome, {{ data.name }}
                     <button type="button" @click="logout"
                         class="bg-blue-300 font-bold text-standardPurple py-1 px-3 rounded-sm">
                         Logout
                     </button>
                 </div>
-
-                <span v-if="message" class="text-red-600">
-                    {{ message }}
-                </span>
-
                 <p class="italic text-standardPurple mt-4 mb-6 hidden md:block">
-                    Enter the fields below to get started
+                    Enter the fields below to change your password
                 </p>
 
-                <form class="" @submit.prevent="form.put(route('update'))">
-                    <label class="font-medium mt-6 mb-2 text-sm block">Full Name</label>
+                <form class="" @submit.prevent="form.put(route('update.password'))">
 
-                    <input type="text" name="name" v-model="form.name"
-                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
-                    <span v-if="$page.props.errors.name" class="text-red-600">
-                        {{ $page.props.errors.name }}
-                    </span>
-                    <br />
-                    <label class="font-medium mt-6 mb-2 text-sm block">Email</label>
-
-                    <input type="email" readonly v-model="form.email"
-                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
-                    <span v-if="$page.props.errors.email" class="text-red-600">
-                        {{ $page.props.errors.email }}
-                    </span>
-                    <br />
                     <label class="font-medium mt-6 mb-2 text-sm block">Password</label>
 
                     <input type="password" placeholder="**********" v-model="form.password"
@@ -103,17 +83,23 @@
                         {{ $page.props.errors.password }}
                     </span>
                     <br />
+                    <label class="font-medium mt-6 mb-2 text-sm block">Confirm Password</label>
+
+                    <input type="password" placeholder="**********" v-model="form.confirm_password"
+                        class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
+                    <span v-if="$page.props.errors.confirm_password" class="text-red-600">
+                        {{ $page.props.errors.confirm_password }}
+                    </span>
+                    <br />
                     <button type="submit"
                         class="mt-8 mb-8 bg-standardPurple text-white py-4 px-3 uppercase text-sm font-bold rounded-md w-full md:w-2/5">
-                        update details
+                        update password
                     </button>
 
                 </form>
-
-                <button type="button" @click="destroy(data.original.data.user_details.id)"
-                    class="block mb-8 bg-white text-red-300 border-red-300 border-2 py-4 px-3 uppercase text-sm font-bold rounded-md w-full md:w-2/5">
-                    delete my account
-                </button>
+                <p class="text-center">back to
+                    <Link :href="route('show.dashboard')" class="underline text-links ">Dashboard</Link>
+                </p>
             </div>
         </div>
     </div>
@@ -121,7 +107,6 @@
 
 <script>
 import { computed, ref } from 'vue'
-import { Inertia } from "@inertiajs/inertia";
 import { Head, useForm, Link, usePage } from '@inertiajs/vue3';
 
 
@@ -133,24 +118,23 @@ export default {
 
 
         const message = props.data.original.message;
+        const data = props.data.original.data.user_details;
 
         const form = useForm({
-            name: props.data.original.data.user_details.name || "",
-            email: props.data.original.data.user_details.email || "",
             password: "",
+            confirm_password: ""
 
         })
 
         const destroy = (id) => {
             if (confirm('Are you sure?')) {
-                Inertia.delete(route("delete", id));
+                this.$inertia.delete(route('delete', id))
             }
         }
 
         const logout = () => {
             if (confirm('Are you sure?')) {
-                Inertia.post(route("logout"));
-                // Inertia.get(route('show.login.page'));
+                // signout.post(route('logout'))
             }
         }
 
@@ -171,7 +155,7 @@ export default {
 
 
 
-        return { form, destroy, message, sidebar, hamburger, closebutton, openMenu, closeMenu, logout }
+        return { form, destroy, data, message, sidebar, hamburger, closebutton, openMenu, closeMenu, logout }
     }
 }
 

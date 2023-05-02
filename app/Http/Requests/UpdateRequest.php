@@ -5,8 +5,10 @@ namespace App\Http\Requests;
 use App\Traits\ApiResponseTrait;
 use App\Traits\EncryptionTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
-class LoginRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     use ApiResponseTrait, EncryptionTrait;
     /**
@@ -25,16 +27,16 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'exists:users,email'],
-            'password' => ['required', 'string', 'min:6'],
+            'name' => ['required', 'string'],
+            'password' => ['required']
         ];
     }
 
     public function messages()
     {
         return [
-            'email.required' => 'Email is required!',
-            'email.exists' => 'Email does not exist!',
+            'name.required' => 'Name is required!',
+            'name.string' => 'Name can only be string',
             'password.required' => 'Password is required!',
             'password.min' => 'Password can only be minimum of 6 characters',
         ];

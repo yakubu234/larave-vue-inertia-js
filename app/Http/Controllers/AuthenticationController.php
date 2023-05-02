@@ -4,15 +4,47 @@ namespace App\Http\Controllers;
 
 use App\Actions\LoginAction;
 use App\Actions\RegisterAction;
+use App\Actions\UpdateUserAction;
+use App\Http\Requests\DeleteRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthenticationController extends Controller
 {
     use ApiResponseTrait;
+
+    public function showDashboard()
+    {
+        $user =  Auth::user();
+        $data = $this->success(['user_details' => new UserResource($user)], 'Login Successful', 201);
+        return Inertia::render('Dashboard', ['data' => $data]);
+    }
+
+    public function showLoginPage()
+    {
+        return Inertia('Login');
+    }
+
+    public function showRegisterPage()
+    {
+        return Inertia('Register');
+    }
+
+    public function showPasswordUpdatePage()
+    {
+        $user =  Auth::user();
+        $data = $this->success(['user_details' => new UserResource($user)], '', 201);
+        return Inertia::render('UpdatePassword', ['data' => $data]);
+    }
 
     public function register(RegisterRequest $request)
     {
@@ -30,37 +62,48 @@ class AuthenticationController extends Controller
         return $request->wantsJson() ? $data : redirect()->route($view)->with('data', $data);
     }
 
-    public function showDashboard()
+    public function updateDetails(UpdateRequest $request)
     {
-        return Inertia::render('Dashboard');
+        $data = (new UpdateUserAction())->update($request->validated());
+        return $request->wantsJson() ? $data : redirect()->route('show.dashboard')->with('data', $data);
     }
 
-    public function showLoginPage()
+    public function updatePassword(PasswordUpdateRequest $request)
     {
-        return Inertia('Login');
+        $data = (new UpdateUserAction())->updatePassword($request->validated());
+        return $request->wantsJson() ? $data : redirect()->route('show.dashboard')->with('data', $data);
     }
 
-    public function showRegisterPage()
+    public function deleteAccount(Request $request)
     {
-        return Inertia('Register');
+        User::where('id', Auth::user()->id)->delete();
+        $data = $this->success(null, 'Account deleted successfully');
+        return $request->wantsJson() ? $data : Inertia::render('Login', ['data' => $data]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        if ($request->wantsJson()) {
+            $request->user()->currentAccessToken()->delete();
+            return  $this->success(null, 'logout successful');
+        }
+
+        Auth::guard('web')->logout();
+        Cookie::forget('token');
+
         $data = $this->success(null, 'logout successful');
-        return $request->wantsJson() ? $data : Inertia::render('Login', ['data' => $data]);
+        return Inertia::render('Login', ['data' => $data]);
     }
 
-    public function deleteAccount()
+    public function refreshToken(Request $request)
     {
-    }
+        $user = $request->user();
+        $user->tokens()->delete();
+        $data = $this->success([
+            'token' =>  $user->createToken('API Token')->plainTextToken,
+            'user_details' => new UserResource($user)
+        ], 'token refresh successful');
 
-    public function updateDetails()
-    {
-    }
-
-    public function newToken()
-    {
+        return $request->wantsJson() ? $data : redirect()->route('/show.dashboard')->with('data', $data);
     }
 }
