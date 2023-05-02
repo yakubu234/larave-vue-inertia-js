@@ -18,13 +18,19 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware(['treblle'])->group(function () {
 
 Route::post('register', [AuthenticationController::class, 'register']);
+
 Route::post('login', [AuthenticationController::class, 'login']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/update', [AuthenticationController::class, 'updateDetails']);
+
+    Route::put('/update-password', [AuthenticationController::class, 'updatePassword']);
+
     Route::delete('/delete', [AuthenticationController::class, 'deleteAccount']);
+
     Route::get('/refresh-token', [AuthenticationController::class, 'refreshToken']);
+
     Route::post('logout', [AuthenticationController::class, 'logout']);
 });
 // });

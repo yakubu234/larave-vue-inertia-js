@@ -36,4 +36,22 @@ class UpdateUserAction
             return $this->error('An error occured when updating', 400, null);
         }
     }
+
+    public function updatePassword($data)
+    {
+        $userID = Auth::user()->id;
+
+        try {
+            $user = User::find($userID);
+
+            unset($data['confirm_password']);
+            $user->update($data);
+            return $this->success([
+                'user_details' => new UserResource($user)
+            ], 'password updated successfully', 200);
+        } catch (\Throwable $th) {
+            $this->log(sprintf('[%s],[%d] ERROR:[%s]', __METHOD__, __LINE__, json_encode($th->getMessage(), true)));
+            return $this->error('An error occured when updating', 400, null);
+        }
+    }
 }

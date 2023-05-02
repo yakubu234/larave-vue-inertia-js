@@ -23,7 +23,7 @@ class LoginAction
                 return $this->success([
                     'token' =>  $user->createToken('API Token')->plainTextToken,
                     'user_details' => new UserResource($user)
-                ], 'Login successful', 200);
+                ], 'Action successful', 200);
             }
 
             return $this->error('Invalid Password', 400, null);

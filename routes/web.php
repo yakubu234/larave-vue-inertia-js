@@ -19,14 +19,26 @@ Route::get('/', function () {
 });
 
 Route::get('show-login-page', [AuthenticationController::class, 'showLoginPage'])->name('show.login.page');
+
 Route::post('login', [AuthenticationController::class, 'login'])->name('login');
+
 Route::post('register', [AuthenticationController::class, 'register'])->name('register');
+
 Route::get('show-register-page', [AuthenticationController::class, 'showRegisterPage'])->name('show.register.page');
+
 Route::get('show-dashboard', [AuthenticationController::class, 'showDashboard'])->name('show.dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::put('/update', [AuthenticationController::class, 'updateDetails'])->name('update');
-    Route::delete('/delete', [AuthenticationController::class, 'deleteAccount'])->name('delete');
-    Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
+
     Route::get('/dashboard', [AuthenticationController::class, 'showDashboard'])->name('show.dashboard');
+
+    Route::get('/update-password-page', [AuthenticationController::class, 'showPasswordUpdatePage'])->name('show.update.password');
+
+    Route::put('/update', [AuthenticationController::class, 'updateDetails'])->name('update');
+
+    Route::put('/update-password', [AuthenticationController::class, 'updatePassword'])->name('update.password');
+
+    Route::delete('/delete', [AuthenticationController::class, 'deleteAccount'])->name('delete');
+
+    Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 });

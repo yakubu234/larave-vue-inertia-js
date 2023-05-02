@@ -41,7 +41,7 @@
             </div>
             <!-- dashboard -->
             <div class="w-full bg-standardPurple">
-                <Link :href="route('show.register.page')">
+                <Link :href="route('show.update.password')">
 
                 <span class="font-bold text-white ml-6 block py-3 mt-top20">Update Password</span>
                 </Link>
@@ -56,14 +56,14 @@
                     Welcome
                 </p>
                 <h2 class="text-standardPurple font-bold text-xl mb-6 text-center md:hidden">
-                    {{ form.name }}
+                    {{ data.name }}
                 </h2>
                 <p class="italic text-standardPurple mt-6 text-center md:hidden">
-                    Edit your details here
+                    Enter the fields below to change your password
                 </p>
                 <div
                     class="font-bold flex items-center justify-between text-white block py-3 px-6 bg-standardPurple hidden md:flex">
-                    welcome, {{ form.name }}
+                    welcome, {{ data.name }}
                     <button type="button" @click="logout"
                         class="bg-blue-300 font-bold text-standardPurple py-1 px-3 rounded-sm">
                         Logout
@@ -73,17 +73,23 @@
                     Enter the fields below to change your password
                 </p>
 
-                <form class="" @submit.prevent="form.put(route('update'))">
+                <form class="" @submit.prevent="form.put(route('update.password'))">
 
                     <label class="font-medium mt-6 mb-2 text-sm block">Password</label>
 
-                    <input type="password" placeholder="**********"
+                    <input type="password" placeholder="**********" v-model="form.password"
                         class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
+                    <span v-if="$page.props.errors.password" class="text-red-600">
+                        {{ $page.props.errors.password }}
+                    </span>
                     <br />
                     <label class="font-medium mt-6 mb-2 text-sm block">Confirm Password</label>
 
-                    <input type="password" placeholder="**********"
+                    <input type="password" placeholder="**********" v-model="form.confirm_password"
                         class="border-2 border-standardPurple border-b-4 outline-0 rounded-md py-1 px-3 w-full" />
+                    <span v-if="$page.props.errors.confirm_password" class="text-red-600">
+                        {{ $page.props.errors.confirm_password }}
+                    </span>
                     <br />
                     <button type="submit"
                         class="mt-8 mb-8 bg-standardPurple text-white py-4 px-3 uppercase text-sm font-bold rounded-md w-full md:w-2/5">
@@ -112,10 +118,11 @@ export default {
 
 
         const message = props.data.original.message;
+        const data = props.data.original.data.user_details;
 
         const form = useForm({
-            password: null,
-            confirm_password: null
+            password: "",
+            confirm_password: ""
 
         })
 
@@ -148,7 +155,7 @@ export default {
 
 
 
-        return { form, destroy, message, sidebar, hamburger, closebutton, openMenu, closeMenu, logout }
+        return { form, destroy, data, message, sidebar, hamburger, closebutton, openMenu, closeMenu, logout }
     }
 }
 

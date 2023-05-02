@@ -41,7 +41,7 @@
             </div>
             <!-- dashboard -->
             <div class="w-full bg-standardPurple">
-                <Link :href="route('show.register.page')">
+                <Link :href="route('show.update.password')">
 
                 <span class="font-bold text-white ml-6 block py-3 mt-top20">Update Password</span>
                 </Link>
@@ -121,6 +121,7 @@
 
 <script>
 import { computed, ref } from 'vue'
+import { Inertia } from "@inertiajs/inertia";
 import { Head, useForm, Link, usePage } from '@inertiajs/vue3';
 
 
@@ -142,13 +143,14 @@ export default {
 
         const destroy = (id) => {
             if (confirm('Are you sure?')) {
-                this.$inertia.delete(route('delete', id))
+                Inertia.delete(route("delete", id));
             }
         }
 
         const logout = () => {
             if (confirm('Are you sure?')) {
-                // signout.post(route('logout'))
+                Inertia.post(route("logout"));
+                // Inertia.get(route('show.login.page'));
             }
         }
 

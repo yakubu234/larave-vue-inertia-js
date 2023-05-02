@@ -16,6 +16,7 @@ use App\Traits\ApiResponseTrait;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthenticationController extends Controller
 {
@@ -38,6 +39,13 @@ class AuthenticationController extends Controller
         return Inertia('Register');
     }
 
+    public function showPasswordUpdatePage()
+    {
+        $user =  Auth::user();
+        $data = $this->success(['user_details' => new UserResource($user)], '', 201);
+        return Inertia::render('UpdatePassword', ['data' => $data]);
+    }
+
     public function register(RegisterRequest $request)
     {
         $data = (new RegisterAction())->register($request->validated());
@@ -57,11 +65,13 @@ class AuthenticationController extends Controller
     public function updateDetails(UpdateRequest $request)
     {
         $data = (new UpdateUserAction())->update($request->validated());
-        return $request->wantsJson() ? $data : redirect()->route('/show.dashboard')->with('data', $data);
+        return $request->wantsJson() ? $data : redirect()->route('show.dashboard')->with('data', $data);
     }
 
     public function updatePassword(PasswordUpdateRequest $request)
     {
+        $data = (new UpdateUserAction())->updatePassword($request->validated());
+        return $request->wantsJson() ? $data : redirect()->route('show.dashboard')->with('data', $data);
     }
 
     public function deleteAccount(Request $request)
@@ -73,9 +83,16 @@ class AuthenticationController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        if ($request->wantsJson()) {
+            $request->user()->currentAccessToken()->delete();
+            return  $this->success(null, 'logout successful');
+        }
+
+        Auth::guard('web')->logout();
+        Cookie::forget('token');
+
         $data = $this->success(null, 'logout successful');
-        return $request->wantsJson() ? $data : Inertia::render('Login', ['data' => $data]);
+        return Inertia::render('Login', ['data' => $data]);
     }
 
     public function refreshToken(Request $request)
